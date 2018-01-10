@@ -1,0 +1,91 @@
+#shelfCard {
+    position: relative;
+    height: 500px;
+    text-align:center;
+}
+
+#shelf {
+    position: absolute;
+    bottom: -150px;
+
+    right: 0;
+    left: 5%;
+    width: 90%;
+
+    border: 1px solid red;
+}
+
+.pot {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    bottom: 0;
+
+    border: 1px solid blue;
+
+}
+
+.divPot {
+    display:block;
+    float:left;
+    height: 370px;
+    text-align: center;
+}
+
+.placementBorder {
+    border: 1px solid green;
+}
+
+/*-----------LEDS-----------*/
+.led {
+    stroke: #FFFFFF;
+    transition: fill 1s;
+}
+
+.ledInput {
+    position: absolute;
+    width: 0px;
+    opacity: 0;
+    filter:alpha(opacity=0);
+}
+
+.led1input {
+    top: 10%;
+    right: 40%;
+}
+
+.led2input {
+    top: 40%;
+    right: 25%;
+}
+
+.led3input {
+    bottom: 20%;
+    right: 40%;
+}
+
+.led4input {
+    bottom: 20%;
+    left: 20%;
+}
+
+.led5input {
+    top: 40%;
+    left: 15%;
+}
+
+.led6input {
+    top: 20%;
+    left: 20%;
+}
+
+.led7input {
+    top: 40%;
+    left: 40%;
+}
+
+/*-----------A supprimer-------------*/
+text {
+    font-size: 17px;
+    fill: #FFFFFF;
+}
