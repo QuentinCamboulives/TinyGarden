@@ -1,39 +1,40 @@
 #shelfCard {
     position: relative;
-    height: 500px;
-    text-align:center;
+    height: 750px;
+    text-align: center;
 }
 
 #shelf {
     position: absolute;
-    bottom: -150px;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+}
 
-    right: 0;
-    left: 5%;
-    width: 90%;
-
-    border: 1px solid red;
+.divPot {
+    height: 600px;
 }
 
 .pot {
     position: absolute;
     width: 50%;
     left: 25%;
-    bottom: 0;
-
-    border: 1px solid blue;
-
+    bottom: 12%;
 }
 
-.divPot {
-    display:block;
-    float:left;
-    height: 370px;
-    text-align: center;
+.plantButton {
+    display: block;
+    position: absolute;
+    width: 30%;
+    left: 35%;    
+    bottom: 2.3%;
+    margin : auto;
 }
 
-.placementBorder {
-    border: 1px solid green;
+/*-----------Plantes-----------*/
+.cardPlants {
+    height: 750px;
+    overflow: auto;
 }
 
 /*-----------LEDS-----------*/
@@ -82,10 +83,4 @@
 .led7input {
     top: 40%;
     left: 40%;
-}
-
-/*-----------A supprimer-------------*/
-text {
-    font-size: 17px;
-    fill: #FFFFFF;
 }

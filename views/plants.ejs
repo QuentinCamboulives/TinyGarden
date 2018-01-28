@@ -1,0 +1,75 @@
+<div class="col-md-6">
+    <div class="card cardPlants">
+        <div class="card-header">
+            <h4 class="card-title">Plantes</h4>
+            <p class="category">Retrouvez ici la liste des plantes disponibles pour votre TinyGarden</p>
+        </div>
+        <div class="card-content">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nom</th>
+                        <th>Éclairage</th>
+                        <th>Description</th>
+                        <th class="text-right">Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% plants.forEach((plant) => { %>
+                        <tr>
+                            <td class="text-center"><img src="/img/plants/<%= plant.name %>.png" alt=""></td>
+                            <td><%= plant.name %></td>
+                            <td class="text-center"><%= plant.lightingDuration %>h</td>
+                            <td><%= plant.description %></td>
+                            <td>
+                                <form action="/Plants/Delete" method="post">
+                                    <input type="hidden" name="plantId" value="<%= plant.id %>">
+                                    <button class="btn btn-danger btn-simple btn-wd"><i class="ti-close"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Ajouter une plante</h4>
+            <p class="category">Si vous souhaitez ajouter une variété qui n'exite pas encore dans notre base</p>
+        </div>
+        <div class="card-content">
+            <form class="form-horizontal" method="post" action="/Plants">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Nom</label>
+                    <div class="col-md-9">
+                        <input type="text" placeholder="Saisir le nom en minuscule" name="name" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Durée d'éclairage</label>
+                    <div class="col-md-9">
+                        <input type="text" placeholder="Saisir une durée d'éclairage en heures" name="lightingDuration" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Description</label>
+                    <div class="col-md-9">
+                        <textarea placeholder="Saisir une description de la plante ou laisser vide" name="description" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3"></label>
+                    <div class="col-md-9">
+                        <button type="submit" class="btn btn-fill btn-info">
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

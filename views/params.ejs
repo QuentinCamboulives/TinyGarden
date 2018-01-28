@@ -1,1 +1,151 @@
-<p>Ici les paramètres</p>
+<div class="row">
+    <div class="col-lg-4 col-sm-6">
+        <div class="card">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <div class="icon-big icon-warning text-center">
+                            <i class="ti-light-bulb"></i>
+                        </div>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="numbers">
+                            <p>Début du cycle d'éclairage à</p>
+                            <%= lightStart %>h
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <hr>
+                <div class="stats">Heure à laquelle vous souhaitez que les led commencent à s'allumer pour le cycle de lumière des plantes.</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-6">
+        <div class="card">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <div class="icon-big icon-danger text-center">
+                            <i class="ti-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="numbers">
+                            <p>Allumage de la pompe toutes les</p>
+                            <%= wateringInterval %>h
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <hr>
+                <div class="stats">Définit un timer qui allume la pompe pour une durée déterminée lorsqu'il arrive à zéro.</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-6">
+        <div class="card">
+            <div class="card-content">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <div class="icon-big icon-info text-center">
+                            <i class="ti-paint-bucket"></i>
+                        </div>
+                    </div>
+                    <div class="col-xs-9">
+                        <div class="numbers">
+                            <p>Durée d'arosage</p>
+                            <%= wateringDuration %>s
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <hr>
+                <div class="stats">Temps où la pompe sera active, attention aux durées trop importantes.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6 col-md-offset-3">
+    <div class="card" style="margin-top: 100px;">
+        <form method="post" action="/Params" class="form-horizontal">
+            <div class="card-header">
+                <h4 class="card-title">Paramètres</h4>
+            </div>
+            <div class="card-content">
+                <div class="form-group col-md-12">
+                    <label class="col-md-7 control-label">Début du cycle d'éclairage à</label>
+                    <div class="col-md-5">
+                        <select name="lightStart" class="selectpicker" data-style="btn btn-info btn-block" title=" ">
+                            <option value="1">01h00 am</option>
+                            <option value="2">02h00 am</option>
+                            <option value="3">03h00 am</option>
+                            <option value="4">04h00 am</option>
+                            <option value="5">05h00 am</option>
+                            <option value="6">06h00 am</option>
+                            <option value="7">07h00 am</option>
+                            <option value="8">08h00 am</option>
+                            <option value="9">09h00 am</option>
+                            <option value="10">10h00 am</option>
+                            <option value="11">11h00 am</option>
+                            <option value="12">12h00 am</option>
+                            <option value="13">01h00 pm</option>
+                            <option value="14">02h00 pm</option>
+                            <option value="15">03h00 pm</option>
+                            <option value="16">04h00 pm</option>
+                            <option value="17">05h00 pm</option>
+                            <option value="18">06h00 pm</option>
+                            <option value="19">07h00 pm</option>
+                            <option value="20">08h00 pm</option>
+                            <option value="21">09h00 pm</option>
+                            <option value="22">10h00 pm</option>
+                            <option value="23">11h00 pm</option>
+                            <option value="24">12h00 pm</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="col-md-7 control-label">Allumage de la pompe toute les</label>
+                    <div class="col-md-5">
+                        <select name="wateringInterval" class="selectpicker" data-style="btn btn-info btn-block" title=" ">
+                            <option value="1">01h</option>
+                            <option value="2">02h</option>
+                            <option value="3">03h</option>
+                            <option value="4">04h</option>
+                            <option value="5">05h</option>
+                            <option value="6">06h</option>
+                            <option value="7">07h</option>
+                            <option value="8">08h</option>
+                            <option value="9">09h</option>
+                            <option value="10">10h</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="col-md-7 control-label">Durée d'arosage</label>
+                    <div class="col-md-5">
+                        <select name="wateringDuration" class="selectpicker" data-style="btn btn-info btn-block" title=" ">
+                            <option value="1">1s</option>
+                            <option value="2">2s</option>
+                            <option value="3">3s</option>
+                            <option value="4">4s</option>
+                            <option value="5">5s</option>
+                            <option value="10">10s</option>
+                            <option value="15">15s</option>
+                            <option value="20">20s</option>
+                            <option value="25">25s</option>
+                            <option value="30">30s</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-fill btn-info" style="display: block; margin: auto;">Valider</button>
+            </div>
+        </form>
+    </div>
+</div>

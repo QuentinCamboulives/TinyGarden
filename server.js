@@ -4,21 +4,94 @@ var ip = require('ip');
 var path = require('path');
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts');
-var keypress = require('keypress');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var TinyGarden = require('./src/TinyGardenUtils');
 var app = express();
+var flash = '';
 
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.use(express.static(__dirname + '/assets')); // Pour charger les assets dans les pages HTML
 app.use('/module', express.static(__dirname + '/node_modules/'));
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-// ------------------------- /Dashboard -------------------------
-app.get(['/', '/Dashboard'], function(req, res) {
-    res.locals = {
-        page: "dashboard",
-        ip: ip.address()
-    };
-    res.render('dashboard');
+// ------------------------- DB connection ------------------
+mongoose.connect("mongodb://localhost/TinyGardenDB");
+var db = mongoose.connection; 
+db.on('error', console.error.bind(console, 'Erreur lors de la connexion à la DB.')); 
+db.once('open', function (){
+    console.log("Connexion à la base OK.");
+});
+var Garden = require("./models/garden");
+var Plant = require("./models/plant");
+
+// ------------------------- /Garden ----------------------
+app.get(['/', '/Garden'], function(req, res) {
+    Garden.find({}).populate('plant').then(garden => {
+        res.locals = {
+            page: "garden",
+            plantes: garden
+        };
+        res.render('garden');
+    });
+});
+
+// ------------------------- /Plant -------------------------
+app.get('/Plant/:id', function(req, res) {
+    Plant.find({}).then(plants => {
+        res.locals = {
+            page: "plant",
+            id: req.params.id,
+            plants: plants,
+            flash: getFlash()
+        };
+        res.render('plant');
+    });
+});
+
+// ------------------------- /Plants -------------------------
+app.get('/Plants', function(req, res) {
+    Plant.find({}).then(plants => {
+        res.locals = {
+            page: "plants",
+            plants: plants,
+            flash: getFlash()
+        };
+        res.render('plants');
+    });
+});
+
+app.post('/Plants', function(req, res) {
+    if (req.body.name != '' && req.body.lightingDuration != '' && req.body.description != '') {
+        var plant = new Plant();
+        plant.name = req.body.name;
+        plant.lightingDuration = req.body.lightingDuration;
+        plant.description = req.body.description;
+        //plant.canBeDel = true; Décommenter une fois l'ajout des plantes mandatory fait. (Permet de pouvoir supprimer des plantes mais pas celles de base)
+        plant.save(function(err){
+            if(err){
+                flash = 'Erreur :' + err;
+            } else {
+                flash = 'La plante à bien été joutée.';
+            }
+        });
+    }
+    res.redirect('/Plants');
+});
+
+app.post('/Plants/Delete', function(req, res) {
+    if (req.body.id != ''){
+        Plant.remove({_id: req.body.plantId}, function(err){
+            if (err){
+                flash = 'Erreur :' + err;
+            } else {
+                flash = 'La plante à bien été supprimée.';
+            }
+        });
+    }
+    res.redirect('/Plants');    
 });
 
 // ------------------------- /Lights -------------------------
@@ -30,13 +103,36 @@ app.get('/Lights', function(req, res) {
     res.render('lights');
 });
 
+// ------------------------- /Tips -------------------------
+app.get('/Tips', function(req, res) {
+    res.locals = {
+        page: "tips",
+    };
+    res.render('tips');
+});
+
 // ------------------------- /Params -------------------------
 app.get('/Params', function(req, res) {
     res.locals = {
         page: "params",
-        ip: ip.address()
+        lightStart: 8,
+        wateringInterval: 4,
+        wateringDuration: 10,
     };
     res.render('params');
+});
+
+app.post('/Params', function(req, res) {
+    if (req.body.lightStart != ''){
+        console.log("Ligh start  :" + req.body.lightStart);        
+    }
+    if (req.body.wateringInterval != '') {
+        console.log("Watering interval :" + req.body.wateringInterval);
+    }
+    if (req.body.wateringDuration != '') {
+        console.log("Watering duration :" + req.body.wateringDuration);
+    }
+    res.redirect('/Params');    
 });
 
 // ------------------------- 404 (All others routes) -------------------------
@@ -45,118 +141,10 @@ app.use(function(req, res, next){
     res.status(404).send('Page introuvable.');
 });
 
-
-
-
-
-
-
-
-
-
-// ------------------------- TESTS -------------------------
-var PiconZero = require("./PiconZero.js");
-
-PiconZero.init();
-
-PiconZero.setOutputConfig(0, 1); //PWM (Analog)
-PiconZero.setOutputConfig(5, 3); //WS2812 (NeoPixel)
-
-
-console.log("Output on !");
-PiconZero.setOutput(0, 1);
-
-console.log("Test Neopixel !");
-PiconZero.setPixel();
-
-/*
-PiconZero.setPixel(1, 0, 255, 0);
-PiconZero.setPixel(2, 0, 0, 255);
-PiconZero.setPixel(3, 255, 255, 0);
-PiconZero.setPixel(4, 0, 255, 255);*/
-//PiconZero.setPixel(5, 255, 0, 255);
-//PiconZero.setPixel(2, 0, 0, 255);
-
-
-/*
-var l = 0;
-var r = 200;
-var g = 0;
-var b = 0;
-var br = 100
-
-PiconZero.setPixel(0, r, g, b);
-
-  // make `process.stdin` begin emitting "keypress" events 
-keypress(process.stdin);
-
-// listen for the "keypress" event 
-process.stdin.on('keypress', function (ch, key) {
-    //console.log('got "keypress"', key.name);
-    console.log("pixel : " + l, " r : " + r + " g : " + g + " b : " + b + " br : " + br);
-  if (key.name == 'q') {
-    console.log("Stopping");
-    PiconZero.stop();
-
-    console.log("Cleanup");
-    PiconZero.cleanup();
-    process.exit();
-  }
-
-  if (key.name == 'z') {
-      r += 10;
-  }
-  if (key.name == 's') {
-    r -= 10;
-}
-if (key.name == 'e') {
-    g+=10;
-}
-if (key.name == 'd') {
-  g-=10;
-}
-if (key.name == 'r') {
-    b+=10;
-}
-if (key.name == 'f') {
-  b-=10;
-}
-if (key.name == 't') {
-    l++;
-}
-if (key.name == 'g') {
-  l--;
-}
-if (key.name == 'y') {
-    br+=10;
-    PiconZero.setBrightness(br);
-}
-if (key.name == 'h') {
-  br-=10;
-  PiconZero.setBrightness(br);
-}
-PiconZero.setPixel(l, r, g, b);
-
-});
- 
-process.stdin.setRawMode(true);
-process.stdin.resume();
-
-
-*/
-
-
 // Catch du SIGINT pour quitter proprement le programme.
 process.on('SIGINT', function() {
-    console.log("Stopping");
-    PiconZero.stop();
-
-    console.log("Cleanup");
-    PiconZero.cleanup();
-    
-    console.log("-------------------------------------------------------------------");
-    console.log("Be careful system goes out, think to take care of your tiny garden.");
-    console.log("(If plants are growing, turn the system back on quickly)");
+    //TinyGarden.cleanup();
+    db.close();
     process.exit();
 });
 
@@ -164,94 +152,12 @@ app.listen(port, function() {
     console.log("Server start on http://" + ip.address() + ":" + port);
 });
 
+function getFlash() {
+    let flashTmp;
 
-
-
-
-/*
-// ------------------ ICI C4EST SMART POOL --------------
-//var SmartPool = require('./SmartPool');
-
-// Values at server start
-var period = "day" // day - night
-var weather = "normal"; // normal - rain
-var coverIsOpen = false;
-var filtrateIsActive = false;
-var waterLevelIsGood = false;
-var chloreisGood = false;
-
-io.sockets.on('connection', function (socket) {
-    // ----- Init Html page --------------------------------------
-    io.emit('connected');
-    io.emit('period', period);
-    io.emit('weather', weather);
-    io.emit('cover', coverIsOpen);
-    io.emit('filtrate', filtrateIsActive);
-    io.emit('waterLevel', waterLevelIsGood);
-    io.emit('chlore', chloreisGood);
-
-    function getSensorsValues(){
-        if (SmartPool.getLuxMeter() > 800) {
-            period = "night";
-        } else if (SmartPool.getLuxMeter() < 800) {
-            period = "day";
-        }
-        io.emit('period', period);
-        io.emit('waterTemp', Math.floor(Math.random() * (27 - 24)) + 24);        
-        setTimeout(getSensorsValues, 2000);
+    if (typeof flash !== 'undefined' && flash != '') {
+        flashTmp = flash;
+        flash = '';
     }
-    getSensorsValues();
-
-    // ----- Cover ----------------------------------------------
-    socket.on('cover', function(msg) {
-        if (coverIsOpen === true) {
-            SmartPool.closeCover();
-            coverIsOpen = !coverIsOpen;
-            io.emit('cover', coverIsOpen);
-        } else if (coverIsOpen === false) {
-            SmartPool.openCover();
-            coverIsOpen = !coverIsOpen;
-            io.emit('cover', coverIsOpen);
-        }
-    });
-
-    // ----- Filtrate -------------------------------------------
-    socket.on('filtrate', function(msg) {
-        if (filtrateIsActive === true) {
-            filtrateIsActive = !filtrateIsActive;
-            SmartPool.filtrate(filtrateIsActive);
-            io.emit('filtrate', filtrateIsActive);
-        } else if (filtrateIsActive === false) {
-            filtrateIsActive = !filtrateIsActive;
-            SmartPool.filtrate(filtrateIsActive);
-            io.emit('filtrate', filtrateIsActive);
-        }
-    });
-
-    // ----- Water Level ----------------------------------------
-    socket.on('waterLevel', function(msg) {
-        if (waterLevelIsGood === true) {
-            waterLevelIsGood = !waterLevelIsGood;
-            SmartPool.fill(waterLevelIsGood);
-            io.emit('waterLevel', waterLevelIsGood);
-        } else if (waterLevelIsGood === false) {
-            waterLevelIsGood = !waterLevelIsGood;
-            SmartPool.fill(waterLevelIsGood);
-            io.emit('waterLevel', waterLevelIsGood);
-        }
-    });
-
-    // ----- Chlore ----------------------------------------
-    socket.on('chlore', function(msg) {
-        if (chloreisGood === true) {
-            SmartPool.addChlore();
-            chloreisGood = !chloreisGood;
-            io.emit('chlore', chloreisGood);
-        } else if (chloreisGood === false) {
-            SmartPool.addChlore();
-            chloreisGood = !chloreisGood;
-            io.emit('chlore', chloreisGood);
-        }
-    });
-});
-*/
+    return flashTmp;
+}

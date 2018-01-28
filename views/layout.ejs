@@ -51,16 +51,28 @@
 	                </div>
 	            </div>
 	            <ul class="nav">
-                    <li class="<%= page == "dashboard" ? 'active' : '' %>">
-	                    <a href="/Dashboard">
-	                        <i class="ti-paint-bucket"></i>
-	                        <p>Croissance</p>
+                    <li class="<%= page == "garden" ? 'active' : '' %>">
+	                    <a href="/Garden">
+	                        <i class="ti-image"></i>
+	                        <p>Jardin</p>
 	                    </a>
-	                </li>
+					</li>
+					<li class="<%= page == "plants" ? 'active' : '' %>">
+						<a href="/Plants">
+							<i class="ti-bookmark-alt"></i>
+							<p>Plantes</p>
+						</a>
+					</li>
 					<li class="<%= page == "lights" ? 'active' : '' %>">
 						<a href="/Lights">
 							<i class="ti-light-bulb"></i>
 							<p>Éclairage</p>
+						</a>
+					</li>
+					<li class="<%= page == "tips" ? 'active' : '' %>">
+						<a href="/Tips">
+							<i class="ti-info-alt"></i>
+							<p>Conseils</p>
 						</a>
 					</li>
 					<li class="<%= page == "params" ? 'active' : '' %>">
